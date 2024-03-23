@@ -1,23 +1,27 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import videojs from 'video.js'
+import { getTitle, getTitleHLS } from '@/api';
+import type { TitleT } from '@/api/anilibria-types';
+import Hls from 'hls.js'
+import { onMounted, ref, watch } from 'vue';
+const props = defineProps<{
+  title: TitleT
+  episode: number
+}>()
 const vidRef = ref<HTMLVideoElement | null>(null)
+const hls = new Hls()
 onMounted(() => {
-    videojs(vidRef.value!, {
-        controls: false,
-    }).addClass('vjs-wrapper');
+    hls.attachMedia(vidRef.value!)
+    hls.loadSource(getTitleHLS(props.title, props.title.player.list[props.episode - 1], "hd"))
 })
+watch([() => props.title, () => props.episode], () => {
+  hls.loadSource(getTitleHLS(props.title, props.title.player.list[props.episode - 1], "hd"))
+})
+// watch([() => props.title, () => props.episode], ([title, episode]: [TitleT, number]) => {
+//     hls.loadSource(getTitleHLS(title, title.player.list[episode - 1], "hd"))
+// })
 </script>
 
 <template>
-    <video ref="vidRef" crossorigin="anonymous" :controls="false">
-        <source :src="'https://cache.libria.fun/videos/media/ts/8874/1/1080/e31bb0014b2fe364fd5306b49a410106.m3u8'">
+    <video ref="vidRef" crossorigin="anonymous" :controls="true">
     </video>
 </template>
-
-<style scoped>
-    video, .vjs-wrapper {
-        width: 100vw;
-        max-width:100%;
-    }
-</style>

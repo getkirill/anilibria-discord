@@ -1,5 +1,4 @@
 import './assets/main.css'
-import 'video.js/dist/video-js.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
