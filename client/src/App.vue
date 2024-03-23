@@ -8,7 +8,8 @@
 
 <template>
   <main>hewwo wowld owo</main>
-  <p>u r {{ displayName }}</p>
+  <p v-if="store.loggedIn">u r {{ displayName }}</p>
+  <p v-else>not logged in!</p>
   <VideoPlayer/>
 </template>
 

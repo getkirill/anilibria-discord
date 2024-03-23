@@ -1,10 +1,13 @@
 import './assets/main.css'
+import 'video.js/dist/video-js.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'
-import { DiscordSDK } from '@discord/embedded-app-sdk';
+import { DiscordSDK, patchUrlMappings } from '@discord/embedded-app-sdk';
 import { useAuthStore } from './stores/auth';
+// patch shit
+patchUrlMappings([{ prefix: "/libria-cache", target: "cache.libria.fun" }, { prefix: "/anilib-api", target: "api.anilibria.tv" }])
 
 const discordSdk = new DiscordSDK(import.meta.env.VITE_DISCORD_CLIENT_ID);
 
@@ -44,7 +47,7 @@ async function setupDiscordSdk() {
     if (auth == null) {
         throw new Error("Authenticate command failed");
     }
-    const {login} = useAuthStore()
+    const { login } = useAuthStore()
     login(auth)
     console.log(auth)
 }

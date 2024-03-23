@@ -25,13 +25,6 @@ export default defineConfig({
         secure: false,
         ws: true,
       },
-      '/libria-cache': {
-        target: "https://cache.libria.fun",
-        changeOrigin: true,
-        secure: true,
-        ws: true,
-        prependPath: false
-      }
     },
   },
   envDir: "../",
