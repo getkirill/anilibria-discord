@@ -1,5 +1,7 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
+import { createWebsocket, waitForReady } from '../ws'
+import type { Message } from '../ws'
 
 export type Auth = {
   access_token: string;
@@ -24,10 +26,19 @@ export type Auth = {
 
 export const useAuthStore = defineStore('auth', () => {
   const authRef = ref<Auth | null>(null)
+  const websocket = ref<WebSocket | null>(null)
   function login(auth: Auth) {
     authRef.value = auth
   }
+  async function setupWebsocket(instance: string) {
+    websocket.value = createWebsocket()
+    await waitForReady(websocket.value)
+    sendMessageToWebsocket({ type: "hello", instance, token: authRef.value!.access_token })
+  }
+  function sendMessageToWebsocket(message: Message) {
+    websocket.value?.send(JSON.stringify(message))
+  }
   const loggedIn = computed(() => authRef.value != null)
 
-  return { authRef, login, loggedIn }
+  return { authRef, login, loggedIn, websocket, setupWebsocket, sendMessageToWebsocket }
 })

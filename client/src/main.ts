@@ -23,6 +23,7 @@ async function setupDiscordSdk() {
         scope: [
             "identify",
             "guilds",
+            // "relationships.read" // seemingly no api
         ],
     });
 
@@ -46,8 +47,9 @@ async function setupDiscordSdk() {
     if (auth == null) {
         throw new Error("Authenticate command failed");
     }
-    const { login } = useAuthStore()
-    login(auth)
+    const store = useAuthStore()
+    store.login(auth)
+    store.setupWebsocket(discordSdk.instanceId)
     console.log(auth)
 }
 const app = createApp(App)
